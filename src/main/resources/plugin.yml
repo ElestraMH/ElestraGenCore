@@ -1,0 +1,12 @@
+name: GenCore
+version: '1.3.0'
+main: com.lilygens.gencore.main
+api-version: 1.17
+authors: [ Summiner ]
+depend:
+  - Vault
+
+commands:
+  GenSlots:
+  GenList:
+    aliases: ["GensList", "GenLists", "GensLists"]

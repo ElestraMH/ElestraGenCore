@@ -1,0 +1,17 @@
+gens:
+  beacon:
+    block: "beacon"
+    drop: "stick"
+    next: "emerald_block"
+    name: "&bPenis Generator &7[Tier 1]"
+    worth: 69420 #Not used
+    upgrade_price: 69420
+    lore: "||&6Information:|| &6¬ &7Sell: &b$1,250|| &6¬ &7Upgrade: &b$69,420" #Use || for new line
+  emerald:
+    block: "emerald_block"
+    drop: "emerald"
+    next: "MAX" #MAX = The Last Generator
+    name: "&aEmerald Generator &7[Tier 2]"
+    worth: 69 #Not Used
+    upgrade_price: 0
+    lore: "||&6Information:|| &6¬ &7Sell: &a$1,500" #Use || for new line
