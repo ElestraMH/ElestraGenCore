@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.ArrayList;
 
 public class gui implements Listener {
-    public static ArrayList<Inventory> GensList;
+    public static ArrayList<Inventory> GensList = new ArrayList<>();
     public static Inventory GenList;
     public static boolean pagination;
     public static ArrayList<Integer> slots = new ArrayList<>();
@@ -26,8 +26,9 @@ public class gui implements Listener {
         for (int i = 28; i <= 34; ++i) {
             slots.add(i);
         }
-        int pages = main.Generators.size() / 27;
-        if (pages == 0) {
+        int pages = (int) Math.floor(main.Generators.size() / 21f)+1;
+        System.out.println(pages);
+        if (pages == 1) {
             pagination = false;
             Inventory inv = Bukkit.createInventory(null, 45, ChatColor.translateAlternateColorCodes('&', "&8Gen List"));
             for (int i = 0; i <= 9; ++i) {
@@ -50,6 +51,40 @@ public class gui implements Listener {
             GenList = inv;
         } else {
             pagination = true;
+            for(int page = 1; page < pages+1; page++) {
+                System.out.println("Page:" + page);
+                int start = (page*21)-20;
+                Inventory inv = Bukkit.createInventory(null, 45, ChatColor.translateAlternateColorCodes('&', "&8Gen List"));
+                for (int i = 0; i <= 9; ++i) {
+                    inv.setItem(i, itemeditor.getItem("border2"));
+                }
+                for (int i = 35; i <= 44; ++i) {
+                    inv.setItem(i, itemeditor.getItem("border2"));
+                }
+                inv.setItem(slots.get(0), itemeditor.getItem("diamond"));
+                inv.setItem(17, itemeditor.getItem("border2"));
+                inv.setItem(18, itemeditor.getItem("border2"));
+                inv.setItem(26, itemeditor.getItem("border2"));
+                inv.setItem(27, itemeditor.getItem("border2"));
+                inv.setItem(40, itemeditor.getItem("close_btn1"));
+                final int[] loops = {0};
+                final int[] slot = {10};
+                int finalPage = page;
+                main.ListedGenerators.forEach(value -> {
+                    if(slot[0] < 35){
+                        loops[0]++;
+                        if(loops[0] >= start){
+                            if(slot[0] == 17 || slot[0] == 26){
+                                slot[0]+=2;
+                            }
+                            Bukkit.broadcastMessage("Adding gen " + value.getItem().getItemMeta().getDisplayName() + " to page " + String.valueOf(finalPage) + " slot " + String.valueOf(slot[0]));
+                            inv.setItem(slot[0], value.getItem());
+                            slot[0]++;
+                        }
+                    }
+                });
+                GensList.add(inv);
+            }
         }
     }
 
