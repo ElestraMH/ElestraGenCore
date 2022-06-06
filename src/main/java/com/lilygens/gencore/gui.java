@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class gui implements Listener {
     public static ArrayList<Inventory> GensList = new ArrayList<>();
     public static Inventory GenList;
-    public static boolean pagination;
+    public static boolean pagination = true;
     public static ArrayList<Integer> slots = new ArrayList<>();
 
     public static void setupGensGuis() {
@@ -27,9 +27,9 @@ public class gui implements Listener {
             slots.add(i);
         }
         int pages = (int) Math.floor(main.Generators.size() / 21f)+1;
-        System.out.println(pages);
-        if (pages == 1) {
-            pagination = false;
+
+        for(int page = 1; page < pages+1; page++) {
+            int start = (page*21)-20;
             Inventory inv = Bukkit.createInventory(null, 45, ChatColor.translateAlternateColorCodes('&', "&8Gen List"));
             for (int i = 0; i <= 9; ++i) {
                 inv.setItem(i, itemeditor.getItem("border2"));
@@ -43,63 +43,42 @@ public class gui implements Listener {
             inv.setItem(26, itemeditor.getItem("border2"));
             inv.setItem(27, itemeditor.getItem("border2"));
             inv.setItem(40, itemeditor.getItem("close_btn1"));
-            final int[] i = {0};
-            main.ListedGenerators.forEach(value -> {
-                inv.setItem(slots.get(i[0]), value.getItem());
-                i[0]++;
-            });
-            GenList = inv;
-        } else {
-            pagination = true;
-            for(int page = 1; page < pages+1; page++) {
-                System.out.println("Page:" + page);
-                int start = (page*21)-20;
-                Inventory inv = Bukkit.createInventory(null, 45, ChatColor.translateAlternateColorCodes('&', "&8Gen List"));
-                for (int i = 0; i <= 9; ++i) {
-                    inv.setItem(i, itemeditor.getItem("border2"));
-                }
-                for (int i = 35; i <= 44; ++i) {
-                    inv.setItem(i, itemeditor.getItem("border2"));
-                }
-                inv.setItem(slots.get(0), itemeditor.getItem("diamond"));
-                inv.setItem(17, itemeditor.getItem("border2"));
-                inv.setItem(18, itemeditor.getItem("border2"));
-                inv.setItem(26, itemeditor.getItem("border2"));
-                inv.setItem(27, itemeditor.getItem("border2"));
-                inv.setItem(40, itemeditor.getItem("close_btn1"));
-                final int[] loops = {0};
-                final int[] slot = {10};
-                int finalPage = page;
-                main.ListedGenerators.forEach(value -> {
-                    if(slot[0] < 35){
-                        loops[0]++;
-                        if(loops[0] >= start){
-                            if(slot[0] == 17 || slot[0] == 26){
-                                slot[0]+=2;
-                            }
-                            Bukkit.broadcastMessage("Adding gen " + value.getItem().getItemMeta().getDisplayName() + " to page " + String.valueOf(finalPage) + " slot " + String.valueOf(slot[0]));
-                            inv.setItem(slot[0], value.getItem());
-                            slot[0]++;
-                        }
-                    }
-                });
-                GensList.add(inv);
+            if(page >= 2) {
+                inv.setItem(37, itemeditor.getItem("back_btn"));
             }
+            if(page < pages) {
+                inv.setItem(43, itemeditor.getItem("next_btn"));
+            }
+            final int[] loops = {0};
+            final int[] slot = {10};
+            main.ListedGenerators.forEach(value -> {
+                if(slot[0] < 35){
+                    loops[0]++;
+                    if(loops[0] >= start){
+                        if(slot[0] == 17 || slot[0] == 26){
+                            slot[0]+=2;
+                        }
+                        inv.setItem(slot[0], value.getItem());
+                        slot[0]++;
+                    }
+                }
+            });
+            if(pages == 1) {
+                pagination= false;
+            }
+            GensList.add(inv);
         }
+
     }
 
     public static void openGensGui(Player player) {
-        if(!pagination) {
-            player.openInventory(GenList);
-        } else {
-            player.openInventory(GensList.get(0));
-        }
+        player.openInventory(GensList.get(0));
     }
 
     @EventHandler
     public void guiClickEvent(InventoryClickEvent event) {
         if(!pagination) {
-            if (event.getInventory().equals(GenList)) {
+            if (event.getInventory().equals(GensList.get(0))) {
                 event.setCancelled(true);
                 Player player = (Player) event.getWhoClicked();
                 if (event.getSlot() == 40) {
@@ -120,12 +99,12 @@ public class gui implements Listener {
                     case 40:
                         player.closeInventory();
                         break;
-                    case 44:
+                    case 43:
                         if(page != GensList.size()-1) {
                             player.openInventory(GensList.get(page+1));
                         }
                         break;
-                    case 36:
+                    case 37:
                         if(page > 0) {
                             player.openInventory(GensList.get(page-1));
                         }
