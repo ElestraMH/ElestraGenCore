@@ -58,7 +58,7 @@ public class events implements Listener {
         for(double y = minY; y <= maxY; ++y) {
             for(double z = minZ; z <= maxZ; ++z) {
                 for(double x = minX; x <= maxX; ++x) {
-                    World world = Bukkit.getWorld("world");
+                    World world = Bukkit.getWorld(pluginhandler.get().getConfig().get("genworld").toString());
                     Block block = world.getBlockAt((int)x, (int)y, (int)z);
                     block.setType(material);
                     active_gens.putIfAbsent(player, new HashMap());
@@ -118,7 +118,7 @@ public class events implements Listener {
             JSONArray list = (JSONArray)jsonObject.get(key);
             ArrayList<Location> locs = new ArrayList();
             Iterator var10 = list.iterator();
-            World world = Bukkit.getWorld("plots");
+            World world = Bukkit.getWorld(pluginhandler.get().getConfig().get("genworld").toString());
             while(var10.hasNext()) {
                 Object loc = var10.next();
                 String a = String.valueOf(loc).replace("=", "/").replace(",", "/");
@@ -304,7 +304,7 @@ public class events implements Listener {
             placed = placed + 1;
             if (placed <= slots) {
                 if (!event.isCancelled()) {
-                    if(event.getBlock().getWorld() != Bukkit.getWorld("plots")) {
+                    if(event.getBlock().getWorld() != Bukkit.getWorld(pluginhandler.get().getConfig().get("genworld").toString())) {
                         event.setCancelled(true);
                         return;
                     }
