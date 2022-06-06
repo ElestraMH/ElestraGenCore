@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-import com.sun.tools.javac.jvm.Gen;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -57,6 +56,8 @@ public final class main extends JavaPlugin {
     private void startLoop() {
         Runnable r = new dropping();
         (new Thread(r)).start();
+        Runnable re = new saving();
+        (new Thread(re)).start();
     }
 
     public static void addGenerator(String block, String drop, String next, Integer worth, Integer upgrade, String name, String lore) {
@@ -86,6 +87,8 @@ public final class main extends JavaPlugin {
         itemeditor.createItem("close_btn1", "&c&lExit", null, Material.BARRIER, false);
         itemeditor.createItem("border1", "&b", null, Material.GRAY_STAINED_GLASS_PANE, false);
         itemeditor.createItem("border2", "&b", null, Material.BLACK_STAINED_GLASS_PANE, false);
+        itemeditor.createItem("back_btn", "&b&lPrevious page", null, Material.ARROW, false);
+        itemeditor.createItem("next_btn", "&b&lNext page", null, Material.ARROW, false);
     }
 
     private void setupGenerators() {
@@ -179,5 +182,8 @@ public final class main extends JavaPlugin {
     }
 
     public void onDisable() {
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            database.savePlayerData(player);
+        }
     }
 }
