@@ -1,3 +1,4 @@
+genworld: world
 gens:
   beacon:
     block: "beacon"
