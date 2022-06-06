@@ -209,7 +209,6 @@ public class database {
         } catch (NullPointerException var2) {
             Bukkit.getLogger().severe(String.valueOf(var2));
         }
-
     }
 
     public static void createNewTable() {
